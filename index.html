@@ -196,8 +196,7 @@
           <p class="kicker">Realisaties</p>
           <h2 id="gallery-title">Bekijk voegwerken en gevelrenovaties van dichtbij.</h2>
           <p class="muted">
-            Een selectie van gevels, voegwerk en renovaties. De foto’s worden volledig getoond,
-            zodat u het werk zonder afgesneden details kan bekijken.
+            Bekijk een selectie van uitgevoerde voegwerken, gevelrenovaties en herstelwerken.
           </p>
         </div>
 
@@ -277,35 +276,56 @@
           </div>
         </div>
 
-        <aside class="contact-panel reveal" aria-label="Contactgegevens">
-          <h2>Neem contact op</h2>
-          <p>Voor een vraag of afspraak kan u bellen of mailen.</p>
-          <div class="contact-links">
-            <a class="contact-link" href="tel:+32497766053">
-              <strong>+32 497 76 60 53</strong>
-              <span>Bellen</span>
-            </a>
-            <a class="contact-link" href="mailto:voegwerken_manu_moeskops@hotmail.com">
-              <strong>voegwerken_manu_moeskops@hotmail.com</strong>
-              <span>Mailen</span>
-            </a>
-            <a
-              class="contact-link"
-              href="https://www.google.com/maps/search/?api=1&query=B-2382%20Poppel"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <strong>B-2382 Poppel</strong>
-              <span>Locatie</span>
-            </a>
-          </div>
-          <a
-            class="button secondary full"
-            href="mailto:voegwerken_manu_moeskops@hotmail.com?subject=Aanvraag%20voegwerken%20of%20gevelrenovatie"
-          >
-            Vraag een vrijblijvende offerte
-          </a>
-        </aside>
+        <form
+          class="contact-panel quote-form reveal"
+          action="mailto:voegwerken_manu_moeskops@hotmail.com"
+          method="post"
+          enctype="text/plain"
+          aria-label="Offerteformulier"
+        >
+          <h2>Vraag een vrijblijvende offerte</h2>
+          <p>Vul kort uw gegevens in. Manu neemt daarna contact met u op.</p>
+
+          <label>
+            Naam
+            <input type="text" name="Naam" autocomplete="name" required />
+          </label>
+
+          <label>
+            Telefoonnummer
+            <input type="tel" name="Telefoonnummer" autocomplete="tel" required />
+          </label>
+
+          <label>
+            E-mail
+            <input type="email" name="E-mail" autocomplete="email" required />
+          </label>
+
+          <label>
+            Gemeente
+            <input type="text" name="Gemeente" autocomplete="address-level2" required />
+          </label>
+
+          <label>
+            Gewenste dienst
+            <select name="Gewenste dienst" required>
+              <option value="">Kies een dienst</option>
+              <option>Gevelrenovatie</option>
+              <option>Voegwerken</option>
+              <option>Gevelreiniging</option>
+              <option>Herstelwerken</option>
+              <option>Impregneren of hydrofoberen</option>
+              <option>DF800 bouwdroger</option>
+            </select>
+          </label>
+
+          <label>
+            Bericht
+            <textarea name="Bericht" rows="5" required></textarea>
+          </label>
+
+          <button class="button secondary full" type="submit">Vraag een vrijblijvende offerte</button>
+        </form>
       </section>
     </main>
 

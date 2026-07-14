@@ -521,6 +521,47 @@ section {
   font-weight: 700;
 }
 
+.quote-form {
+  display: grid;
+  gap: 14px;
+}
+
+.quote-form h2,
+.quote-form p {
+  margin-bottom: 0;
+}
+
+.quote-form label {
+  display: grid;
+  gap: 6px;
+  color: #f4eee8;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.quote-form input,
+.quote-form select,
+.quote-form textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--ink);
+  font: inherit;
+  padding: 12px 13px;
+}
+
+.quote-form textarea {
+  resize: vertical;
+}
+
+.quote-form input:focus,
+.quote-form select:focus,
+.quote-form textarea:focus {
+  outline: 3px solid rgba(246, 207, 165, 0.5);
+  border-color: #f3d4aa;
+}
+
 .mobile-cta {
   display: none;
 }
