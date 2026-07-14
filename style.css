@@ -138,7 +138,10 @@ img {
   inset: 0;
   background:
     linear-gradient(90deg, rgba(245, 241, 234, 0.97) 0%, rgba(245, 241, 234, 0.84) 42%, rgba(245, 241, 234, 0.18) 72%),
-    url("./assets/hero-project.jpg") center right / cover no-repeat;
+    url("./assets/hero-project.jpg");
+  background-position: center right;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .hero-inner {
@@ -226,7 +229,7 @@ h3 {
 }
 
 .button.secondary {
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--white);
   color: var(--brick-dark);
 }
 
@@ -635,34 +638,8 @@ footer {
     align-items: flex-end;
   }
 
-  .hero-media {
-    background:
-      linear-gradient(180deg, rgba(33, 31, 31, 0.28), rgba(33, 31, 31, 0.86)),
-      url("./assets/hero-project.jpg") center right / cover no-repeat;
-  }
-
   .hero-inner {
     padding: 140px 0 42px;
-  }
-
-  .hero .kicker,
-  .hero h1,
-  .hero .lead {
-    color: var(--white);
-  }
-
-  .hero .lead {
-    color: #f1e9e1;
-  }
-
-  .hero .button.secondary {
-    border-color: rgba(255, 255, 255, 0.62);
-    background: rgba(255, 255, 255, 0.14);
-    color: var(--white);
-  }
-
-  .hero .button.call {
-    border-color: rgba(255, 255, 255, 0.82);
   }
 
   .split,
