@@ -230,6 +230,11 @@ h3 {
   color: var(--brick-dark);
 }
 
+.button.call {
+  background: var(--white);
+  color: var(--brick-dark);
+}
+
 .button.full {
   width: 100%;
   margin-top: 20px;
@@ -516,6 +521,10 @@ section {
   font-weight: 700;
 }
 
+.mobile-cta {
+  display: none;
+}
+
 footer {
   border-top: 1px solid var(--line);
   color: var(--muted);
@@ -611,6 +620,10 @@ footer {
     color: var(--white);
   }
 
+  .hero .button.call {
+    border-color: rgba(255, 255, 255, 0.82);
+  }
+
   .split,
   .contact,
   .steps,
@@ -624,6 +637,10 @@ footer {
 }
 
 @media (max-width: 560px) {
+  body {
+    padding-bottom: 74px;
+  }
+
   .topbar {
     gap: 14px;
     padding: 14px 0;
@@ -700,5 +717,35 @@ footer {
     align-items: flex-start;
     flex-direction: column;
     gap: 4px;
+  }
+
+  .mobile-cta {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow: 0 -12px 28px rgba(33, 31, 31, 0.18);
+  }
+
+  .mobile-cta a {
+    display: flex;
+    min-height: 64px;
+    align-items: center;
+    justify-content: center;
+    background: var(--brick-dark);
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 800;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .mobile-cta a:first-child {
+    background: var(--charcoal);
   }
 }
