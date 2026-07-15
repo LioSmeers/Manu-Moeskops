@@ -554,32 +554,70 @@ section {
 
 .before-after-card {
   grid-column: 1 / -1;
+  gap: 18px;
+  border-color: rgba(150, 20, 29, 0.18);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 244, 238, 0.92));
+  padding: 18px;
+}
+
+.before-after-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 14px;
+}
+
+.before-after-heading span {
+  display: inline-flex;
+  border-radius: 4px;
+  background: #f2dfe0;
+  color: var(--brick-dark);
+  font-size: 13px;
+  font-weight: 800;
+  padding: 4px 8px;
+}
+
+.before-after-heading h3 {
+  margin-bottom: 0;
+}
+
+.before-after-card .before-after {
+  gap: 14px;
 }
 
 .before-after-card .before-after figure {
   display: grid;
-  gap: 10px;
+  grid-template-rows: 1fr auto;
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
 }
 
 .before-after-card .before-after img {
   display: block;
   width: 100%;
   aspect-ratio: 4 / 3;
-  height: auto;
+  height: clamp(280px, 32vw, 430px);
   object-fit: cover;
+  border-radius: 8px 8px 0 0;
 }
 
 .before-after-card .before-after figcaption {
   position: static;
   right: auto;
   bottom: auto;
+  border-top: 1px solid var(--line);
   border-radius: 0;
-  background: transparent;
+  background: var(--white);
   color: var(--charcoal);
   font-size: 14px;
   font-weight: 800;
-  padding: 0;
+  padding: 11px 12px;
 }
+
 
 .contact-panel {
   border-radius: 8px;
@@ -830,6 +868,16 @@ footer {
   .project-grid,
   .before-after {
     grid-template-columns: 1fr;
+  }
+
+  .before-after-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .before-after-card .before-after img {
+    height: min(78vw, 360px);
   }
 
 
