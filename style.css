@@ -252,6 +252,13 @@ section {
   padding: 72px 0;
 }
 
+#diensten,
+#werkwijze,
+#realisaties,
+#contact {
+  scroll-margin-top: 132px;
+}
+
 .split {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -677,6 +684,13 @@ footer {
 }
 
 @media (max-width: 860px) {
+  #diensten,
+  #werkwijze,
+  #realisaties,
+  #contact {
+    scroll-margin-top: 172px;
+  }
+
   .topbar,
   .footer-inner {
     align-items: flex-start;
@@ -725,6 +739,13 @@ footer {
 }
 
 @media (max-width: 560px) {
+  #diensten,
+  #werkwijze,
+  #realisaties,
+  #contact {
+    scroll-margin-top: 190px;
+  }
+
   body {
     padding-bottom: 74px;
   }
