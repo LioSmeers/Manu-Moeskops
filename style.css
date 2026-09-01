@@ -836,6 +836,16 @@ footer {
   gap: 16px;
 }
 
+.footer-owner {
+  display: grid;
+  gap: 3px;
+}
+
+.footer-owner span:last-child {
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(22px);
