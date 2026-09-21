@@ -91,7 +91,6 @@ async function initMasonryScene(canvas, stage, progressLabel) {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-  const isMobile = window.innerWidth < 560;
   camera.position.set(0, 2.25, 10.5);
   camera.lookAt(0, 2.05, 0);
 
@@ -100,7 +99,7 @@ async function initMasonryScene(canvas, stage, progressLabel) {
     alpha: true,
     powerPreference: "high-performance"
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.25 : 1.5));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -116,7 +115,7 @@ async function initMasonryScene(canvas, stage, progressLabel) {
   const keyLight = new THREE.DirectionalLight(0xfff4df, 4.2);
   keyLight.position.set(-4, 9, 7);
   keyLight.castShadow = true;
-  keyLight.shadow.mapSize.set(isMobile ? 512 : 1024, isMobile ? 512 : 1024);
+  keyLight.shadow.mapSize.set(1024, 1024);
   keyLight.shadow.camera.left = -10;
   keyLight.shadow.camera.right = 10;
   keyLight.shadow.camera.top = 9;

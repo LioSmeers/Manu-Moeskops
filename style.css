@@ -1179,8 +1179,12 @@ body {
 }
 
 .topbar-cta span {
-  font-size: 17px;
-  line-height: 1;
+  width: 9px;
+  height: 9px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  font-size: 0;
+  transform: rotate(45deg);
 }
 
 .topbar-cta:hover,
@@ -1289,8 +1293,14 @@ body {
 }
 
 .hero .button span {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
   margin-left: 8px;
-  font-size: 18px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  font-size: 0;
+  transform: rotate(45deg);
 }
 
 .hero-trust {
@@ -1361,7 +1371,16 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 50%;
   color: #8e1117;
-  font-size: 18px;
+  font-size: 0;
+}
+
+.hero-card-arrow::before {
+  width: 9px;
+  height: 9px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  content: "";
+  transform: rotate(45deg);
 }
 
 .hero-card p {
@@ -2034,9 +2053,9 @@ body {
   }
 
   .masonry-stage {
-    height: min(58vh, 420px);
-    min-height: 300px;
-    border-radius: 0;
+    height: min(62vh, 460px);
+    min-height: 330px;
+    border-radius: 9px;
   }
 
   .masonry-section > .service-grid {
@@ -2055,6 +2074,6 @@ body {
   }
 
   .masonry-section > .service-grid {
-    margin-top: 32px;
+    margin-top: -20px;
   }
 }
