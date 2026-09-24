@@ -72,11 +72,10 @@ function initBeforeAfterSlider() {
   document.querySelectorAll("[data-before-after]").forEach((section) => {
     const frame = section.querySelector(".before-after-scroll__frame");
     const after = section.querySelector(".before-after-scroll__after");
-    const handle = section.querySelector("[data-before-after-handle]");
-    if (!frame || !after || !handle) return;
+    if (!frame || !after) return;
 
     let value = 50;
-    let dragging = false;
+    let touching = false;
 
     const updateSlider = (nextValue) => {
       value = Math.min(100, Math.max(0, nextValue));
@@ -90,17 +89,18 @@ function initBeforeAfterSlider() {
       updateSlider(((event.clientX - bounds.left) / bounds.width) * 100);
     };
 
-    handle.addEventListener("pointerdown", (event) => {
-      dragging = true;
-      handle.setPointerCapture(event.pointerId);
+    frame.addEventListener("pointerdown", (event) => {
+      if (event.pointerType !== "touch") return;
+      touching = true;
+      frame.setPointerCapture(event.pointerId);
       updateFromPointer(event);
     });
-    handle.addEventListener("pointermove", (event) => {
-      if (dragging) updateFromPointer(event);
+    frame.addEventListener("pointermove", (event) => {
+      if (event.pointerType === "mouse" || touching) updateFromPointer(event);
     });
-    handle.addEventListener("pointerup", () => { dragging = false; });
-    handle.addEventListener("pointercancel", () => { dragging = false; });
-    handle.addEventListener("keydown", (event) => {
+    frame.addEventListener("pointerup", () => { touching = false; });
+    frame.addEventListener("pointercancel", () => { touching = false; });
+    frame.addEventListener("keydown", (event) => {
       if (event.key === "ArrowLeft") updateSlider(value - 4);
       if (event.key === "ArrowRight") updateSlider(value + 4);
       if (event.key === "Home") updateSlider(0);

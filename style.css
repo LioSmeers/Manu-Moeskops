@@ -566,7 +566,7 @@ section {
   pointer-events: none;
 }
 
-.before-after-scroll__handle {
+.before-after-scroll__frame::before {
   position: absolute;
   top: 50%;
   left: var(--before-after-position, 50%);
@@ -579,22 +579,12 @@ section {
   background: var(--brick-dark);
   box-shadow: 0 4px 14px rgba(33, 31, 31, 0.25);
   color: #fff;
-  cursor: ew-resize;
   font-size: 19px;
   font-weight: 800;
   place-items: center;
   transform: translate(-50%, -50%);
-  padding: 0;
-  touch-action: none;
-}
-
-.before-after-scroll__handle:focus-visible {
-  outline: 3px solid #fff;
-  outline-offset: 3px;
-}
-
-.before-after-scroll__handle span {
-  line-height: 1;
+  content: "↔";
+  pointer-events: none;
 }
 
 .before-after-scroll .photo-card figcaption {
