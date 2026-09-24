@@ -60,10 +60,9 @@ if (hero && heroCard && !reduceMotion && window.matchMedia("(pointer: fine)").ma
 }
 
 function initPhotoSequence() {
-  const steps = [...document.querySelectorAll(".gallery-step")].map((step, index) => ({
+  const steps = [...document.querySelectorAll(".gallery-step")].map((step) => ({
     step,
-    visual: step.querySelector(".gallery-visual"),
-    direction: index % 2 === 0 ? -1 : 1
+    visuals: [...step.querySelectorAll(".gallery-visual")]
   }));
   const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
   let pending = false;
@@ -73,17 +72,20 @@ function initPhotoSequence() {
     const viewportHeight = window.innerHeight;
     const distance = Math.min(window.innerWidth * 0.22, 240);
 
-    steps.forEach(({ step, visual, direction }) => {
+    steps.forEach(({ step, visuals }) => {
       const bounds = step.getBoundingClientRect();
       // Measure the stationary step, not the animated image, to avoid feedback.
       const offset = (bounds.top + bounds.height / 2 - viewportHeight / 2) / bounds.height;
-      const progress = Math.max(0, Math.min(1, (0.5 - Math.abs(offset)) / 0.32));
+      const progress = Math.max(0, Math.min(1, (0.5 - Math.abs(offset)) / 0.18));
       const visibility = progress * progress * (3 - 2 * progress);
-      visual.style.opacity = motionPreference.matches ? "1" : String(visibility);
-      visual.style.transform = motionPreference.matches
-        ? "none"
-        : `translate3d(${direction * distance * (1 - visibility)}px, 0, 0)`;
-      visual.style.pointerEvents = visibility > 0.5 || motionPreference.matches ? "auto" : "none";
+      visuals.forEach((visual, index) => {
+        const direction = index % 2 === 0 ? -1 : 1;
+        visual.style.opacity = motionPreference.matches ? "1" : String(visibility);
+        visual.style.transform = motionPreference.matches
+          ? "none"
+          : `translate3d(${direction * distance * (1 - visibility)}px, 0, 0) rotate(${direction * 1.5 * (1 - visibility)}deg) scale(${0.97 + 0.03 * visibility})`;
+        visual.style.pointerEvents = visibility > 0.5 || motionPreference.matches ? "auto" : "none";
+      });
     });
   };
 
@@ -108,6 +110,45 @@ function initBeforeAfterSlider() {
     const frame = section.querySelector(".before-after-scroll__frame");
     const after = section.querySelector(".before-after-scroll__after");
     if (!frame || !after) return;
+
+    const beforeImage = section.querySelector(".before-after-scroll__before img");
+    const afterImage = after.querySelector("img");
+    // Match the rear wall plane, then crop both originals to their common area.
+    // Normalized homography measured from the existing, unmodified photographs.
+    const wallAlignment = [
+      0.83814436, -0.01004971, 0.11598699,
+      0.01037002, 0.96625679, 0.041983,
+      0.04223339, -0.03057144, 1
+    ];
+    const alignImages = () => {
+      if (!beforeImage.naturalWidth || !afterImage.naturalWidth || !frame.clientWidth) return;
+      const width = frame.clientWidth;
+      const height = frame.clientHeight;
+      const cropX = 0.15;
+      const cropY = 0.07;
+      const cropWidth = 0.76;
+      const cropHeight = (beforeImage.naturalWidth * cropWidth / beforeImage.naturalHeight) * height / width;
+      frame.classList.add("is-registered");
+      [beforeImage, afterImage].forEach((image, index) => {
+        const h = index ? wallAlignment : [1, 0, 0, 0, 1, 0, 0, 0, 1];
+        const m = [
+          (h[0] - cropX * h[6]) / cropWidth, (h[1] - cropX * h[7]) / cropWidth, (h[2] - cropX * h[8]) / cropWidth,
+          (h[3] - cropY * h[6]) / cropHeight, (h[4] - cropY * h[7]) / cropHeight, (h[5] - cropY * h[8]) / cropHeight,
+          h[6], h[7], h[8]
+        ];
+        const imageHeight = width * image.naturalHeight / image.naturalWidth;
+        image.style.transform = `matrix3d(${[
+          m[0], m[3] * height / width, 0, m[6] / width,
+          m[1] * width / imageHeight, m[4] * height / imageHeight, 0, m[7] / imageHeight,
+          0, 0, 1, 0,
+          m[2] * width, m[5] * height, 0, m[8]
+        ].join(",")})`;
+      });
+    };
+    beforeImage.addEventListener("load", alignImages);
+    afterImage.addEventListener("load", alignImages);
+    new ResizeObserver(alignImages).observe(frame);
+    alignImages();
 
     let value = 50;
     let activePointer = null;

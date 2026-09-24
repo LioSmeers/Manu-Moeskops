@@ -18,13 +18,13 @@
 }
 
 html {
-  overflow-x: hidden;
+  overflow-x: clip;
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  overflow-x: hidden;
+  overflow-x: clip;
   background:
     linear-gradient(180deg, #fff 0%, #fff 34%, #f8f4ee 100%);
   color: var(--ink);
@@ -460,7 +460,17 @@ section {
 }
 
 .gallery-step {
+  height: 155svh;
+  position: relative;
+  overflow: clip;
+}
+
+.gallery-viewport {
+  position: sticky;
+  top: 0;
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 36px;
   height: 100svh;
   padding: 32px 0 64px;
   place-items: center;
@@ -468,7 +478,7 @@ section {
 }
 
 .gallery-visual {
-  width: min(960px, 100%);
+  width: 100%;
   margin: 0 auto;
   will-change: transform, opacity;
 }
@@ -486,7 +496,7 @@ section {
   transition: none;
 }
 
-.gallery-step > .photo-card {
+.gallery-viewport > .photo-card {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -511,11 +521,14 @@ section {
   text-align: center;
 }
 
-.gallery-step > .photo-card > img {
+.gallery-viewport > .photo-card > img {
   width: auto;
   height: auto;
   max-width: 100%;
   max-height: min(720px, calc(100svh - 168px));
+  border: 2px solid #8e1117;
+  border-radius: 4px;
+  box-shadow: 0 18px 40px rgba(46, 27, 24, 0.16);
 }
 
 .before-after-scroll {
@@ -526,11 +539,12 @@ section {
   position: relative;
   width: min(100%, 960px, calc((100svh - 160px) * 1.8));
   aspect-ratio: 1.8;
+  border: 2px solid #8e1117;
   margin: 0 auto;
   overflow: hidden;
-  border-radius: 0;
+  border-radius: 4px;
   background: transparent;
-  box-shadow: none;
+  box-shadow: 0 18px 40px rgba(46, 27, 24, 0.16);
   cursor: ew-resize;
   touch-action: pan-y pinch-zoom;
   user-select: none;
@@ -561,6 +575,12 @@ section {
   transform: none;
   -webkit-user-drag: none;
   pointer-events: none;
+}
+
+.gallery-section .before-after-scroll__frame.is-registered .photo-card img {
+  height: auto;
+  max-width: none;
+  transform-origin: 0 0;
 }
 
 .before-after-scroll__before {
@@ -640,13 +660,28 @@ section {
   right: auto;
 }
 
-@media (max-width: 560px) {
-  .gallery-step {
-    padding-bottom: 88px;
+@media (max-width: 700px) {
+  .gallery-viewport {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    padding: 24px 0 88px;
   }
 
-  .gallery-step > .photo-card > img {
-    max-height: calc(100svh - 198px);
+  .gallery-viewport > .photo-card > img {
+    max-height: calc((100svh - 210px) / 2);
+  }
+
+  .gallery-viewport > .photo-card {
+    gap: 8px;
+  }
+
+  .gallery-viewport > .photo-card figcaption {
+    font-size: 12px;
+  }
+
+  .before-after-scroll__frame {
+    width: min(100%, calc((100svh - 210px) * 0.9));
   }
 
   .gallery-section .before-after-scroll .photo-card figcaption {
