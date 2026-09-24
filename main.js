@@ -1,5 +1,4 @@
 const revealItems = document.querySelectorAll(".reveal");
-const photoRevealItems = document.querySelectorAll(".photo-grid > .photo-card.reveal");
 const year = document.querySelector("#year");
 
 if (year) {
@@ -10,20 +9,12 @@ revealItems.forEach((item, index) => {
   item.style.transitionDelay = `${Math.min(index * 70, 280)}ms`;
 });
 
-photoRevealItems.forEach((item, index) => {
-  item.classList.add(index % 2 === 0 ? "reveal--from-left" : "reveal--from-right");
-  item.style.transitionDelay = `${Math.min(index * 55, 220)}ms`;
-});
-
 function revealOnScroll() {
   revealItems.forEach((item) => {
+    if (item.classList.contains("is-visible")) return;
     const rect = item.getBoundingClientRect();
-    const isPhoto = item.parentElement?.classList.contains("photo-grid");
     const isVisible = rect.top < window.innerHeight - 70 && rect.bottom > 70;
-
-    if (isPhoto) {
-      item.classList.toggle("is-visible", isVisible);
-    } else if (isVisible) {
+    if (isVisible) {
       item.classList.add("is-visible");
     }
   });
@@ -68,6 +59,50 @@ if (hero && heroCard && !reduceMotion && window.matchMedia("(pointer: fine)").ma
   });
 }
 
+function initPhotoSequence() {
+  const steps = [...document.querySelectorAll(".gallery-step")].map((step, index) => ({
+    step,
+    visual: step.querySelector(".gallery-visual"),
+    direction: index % 2 === 0 ? -1 : 1
+  }));
+  const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let pending = false;
+
+  const update = () => {
+    pending = false;
+    const viewportHeight = window.innerHeight;
+    const distance = Math.min(window.innerWidth * 0.22, 240);
+
+    steps.forEach(({ step, visual, direction }) => {
+      const bounds = step.getBoundingClientRect();
+      // Measure the stationary step, not the animated image, to avoid feedback.
+      const offset = (bounds.top + bounds.height / 2 - viewportHeight / 2) / bounds.height;
+      const progress = Math.max(0, Math.min(1, (0.5 - Math.abs(offset)) / 0.32));
+      const visibility = progress * progress * (3 - 2 * progress);
+      visual.style.opacity = motionPreference.matches ? "1" : String(visibility);
+      visual.style.transform = motionPreference.matches
+        ? "none"
+        : `translate3d(${direction * distance * (1 - visibility)}px, 0, 0)`;
+      visual.style.pointerEvents = visibility > 0.5 || motionPreference.matches ? "auto" : "none";
+    });
+  };
+
+  const requestUpdate = () => {
+    if (pending) return;
+    pending = true;
+    window.requestAnimationFrame(update);
+  };
+
+  update();
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate, { passive: true });
+  window.addEventListener("load", requestUpdate);
+  motionPreference.addEventListener("change", requestUpdate);
+  new ResizeObserver(requestUpdate).observe(document.querySelector(".photo-grid"));
+}
+
+initPhotoSequence();
+
 function initBeforeAfterSlider() {
   document.querySelectorAll("[data-before-after]").forEach((section) => {
     const frame = section.querySelector(".before-after-scroll__frame");
@@ -75,13 +110,14 @@ function initBeforeAfterSlider() {
     if (!frame || !after) return;
 
     let value = 50;
-    let touching = false;
+    let activePointer = null;
 
     const updateSlider = (nextValue) => {
       value = Math.min(100, Math.max(0, nextValue));
       after.style.clipPath = `inset(0 0 0 ${value}%)`;
       frame.style.setProperty("--before-after-position", `${value}%`);
       frame.setAttribute("aria-valuenow", String(Math.round(value)));
+      frame.setAttribute("aria-valuetext", `${Math.round(value)}% voor renovatie`);
     };
 
     const updateFromPointer = (event) => {
@@ -89,18 +125,30 @@ function initBeforeAfterSlider() {
       updateSlider(((event.clientX - bounds.left) / bounds.width) * 100);
     };
 
+    frame.addEventListener("dragstart", (event) => event.preventDefault());
+    frame.addEventListener("pointerenter", (event) => {
+      if (event.pointerType === "mouse") updateFromPointer(event);
+    });
     frame.addEventListener("pointerdown", (event) => {
-      if (event.pointerType !== "touch") return;
-      touching = true;
+      if (!event.isPrimary || event.button !== 0) return;
+      activePointer = event.pointerId;
       frame.setPointerCapture(event.pointerId);
       updateFromPointer(event);
     });
     frame.addEventListener("pointermove", (event) => {
-      if (event.pointerType === "mouse" || touching) updateFromPointer(event);
+      if (event.pointerType === "mouse" || event.pointerId === activePointer) updateFromPointer(event);
     });
-    frame.addEventListener("pointerup", () => { touching = false; });
-    frame.addEventListener("pointercancel", () => { touching = false; });
+    const finishPointer = (event) => {
+      if (event.pointerId !== activePointer) return;
+      activePointer = null;
+      if (frame.hasPointerCapture(event.pointerId)) frame.releasePointerCapture(event.pointerId);
+    };
+    frame.addEventListener("pointerup", finishPointer);
+    frame.addEventListener("pointercancel", finishPointer);
+    frame.addEventListener("lostpointercapture", () => { activePointer = null; });
     frame.addEventListener("keydown", (event) => {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
       if (event.key === "ArrowLeft") updateSlider(value - 4);
       if (event.key === "ArrowRight") updateSlider(value + 4);
       if (event.key === "Home") updateSlider(0);
