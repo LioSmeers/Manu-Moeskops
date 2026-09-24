@@ -482,7 +482,6 @@ section {
 .gallery-visual {
   width: 100%;
   margin: 0 auto;
-  will-change: transform, opacity;
 }
 
 .gallery-section .photo-card {
@@ -524,10 +523,12 @@ section {
 }
 
 .gallery-viewport > .photo-card > img {
-  width: auto;
+  --photo-max-height: min(720px, calc(100svh - 168px));
+  width: min(100%, calc(var(--photo-max-height) * var(--photo-ratio)));
   height: auto;
+  aspect-ratio: var(--photo-ratio);
   max-width: 100%;
-  max-height: min(720px, calc(100svh - 168px));
+  max-height: var(--photo-max-height);
   border: 2px solid #8e1117;
   border-radius: 4px;
   box-shadow: 0 18px 40px rgba(46, 27, 24, 0.16);
@@ -663,7 +664,13 @@ section {
 }
 
 @media (max-width: 700px) {
+  .gallery-step {
+    height: auto;
+  }
+
   .gallery-viewport {
+    position: relative;
+    top: auto;
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: repeat(2, minmax(0, 1fr));
     gap: 20px;
@@ -671,7 +678,7 @@ section {
   }
 
   .gallery-viewport > .photo-card > img {
-    max-height: calc((100svh - 210px) / 2);
+    --photo-max-height: calc((100svh - 210px) / 2);
   }
 
   .gallery-viewport > .photo-card {
@@ -715,7 +722,7 @@ section {
 
 .gallery-entered .gallery-visual {
   opacity: 1;
-  transform: translate3d(0, 0, 0) scale(1);
+  transform: none;
 }
 
 .gallery-viewport::before {
