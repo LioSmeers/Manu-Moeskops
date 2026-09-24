@@ -1,4 +1,5 @@
 const revealItems = document.querySelectorAll(".reveal");
+const photoRevealItems = document.querySelectorAll(".photo-grid > .photo-card.reveal");
 const year = document.querySelector("#year");
 
 if (year) {
@@ -9,12 +10,20 @@ revealItems.forEach((item, index) => {
   item.style.transitionDelay = `${Math.min(index * 70, 280)}ms`;
 });
 
+photoRevealItems.forEach((item, index) => {
+  item.classList.add(index % 2 === 0 ? "reveal--from-left" : "reveal--from-right");
+  item.style.transitionDelay = `${Math.min(index * 55, 220)}ms`;
+});
+
 function revealOnScroll() {
   revealItems.forEach((item) => {
-    if (item.classList.contains("is-visible")) return;
-
     const rect = item.getBoundingClientRect();
-    if (rect.top < window.innerHeight - 90) {
+    const isPhoto = item.parentElement?.classList.contains("photo-grid");
+    const isVisible = rect.top < window.innerHeight - 70 && rect.bottom > 70;
+
+    if (isPhoto) {
+      item.classList.toggle("is-visible", isVisible);
+    } else if (isVisible) {
       item.classList.add("is-visible");
     }
   });
@@ -59,70 +68,49 @@ if (hero && heroCard && !reduceMotion && window.matchMedia("(pointer: fine)").ma
   });
 }
 
-function initBeforeAfterReveal() {
-  const sections = [...document.querySelectorAll("[data-before-after]")];
-  if (!sections.length) return;
+function initBeforeAfterSlider() {
+  document.querySelectorAll("[data-before-after]").forEach((section) => {
+    const frame = section.querySelector(".before-after-scroll__frame");
+    const after = section.querySelector(".before-after-scroll__after");
+    if (!frame || !after) return;
 
-  let ticking = false;
+    let value = 50;
+    let dragging = false;
 
-  const updateReveal = () => {
-    sections.forEach((section) => {
-      const sticky = section.querySelector(".before-after-scroll__sticky");
-      const after = section.querySelector(".before-after-scroll__after");
-      const progressBar = section.querySelector("[data-before-after-progress]");
-      if (!sticky || !after) return;
+    const updateSlider = (nextValue) => {
+      value = Math.min(100, Math.max(0, nextValue));
+      after.style.clipPath = `inset(0 0 0 ${value}%)`;
+      frame.style.setProperty("--before-after-position", `${value}%`);
+      frame.setAttribute("aria-valuenow", String(Math.round(value)));
+    };
 
-      const bounds = section.getBoundingClientRect();
-      const stickyTop = parseFloat(getComputedStyle(sticky).top) || 0;
-      const travel = Math.max(1, section.offsetHeight - sticky.offsetHeight);
-      const progress = Math.min(1, Math.max(0, (stickyTop - bounds.top) / travel));
-      const pinStart = bounds.top <= stickyTop;
-      const pinEnd = bounds.bottom <= stickyTop + sticky.offsetHeight;
+    const updateFromPointer = (event) => {
+      const bounds = frame.getBoundingClientRect();
+      updateSlider(((event.clientX - bounds.left) / bounds.width) * 100);
+    };
 
-      if (pinStart && !pinEnd) {
-        sticky.style.position = "fixed";
-        sticky.style.top = `${stickyTop}px`;
-        sticky.style.left = `${bounds.left}px`;
-        sticky.style.width = `${bounds.width}px`;
-        sticky.style.zIndex = "20";
-      } else {
-        sticky.style.position = "sticky";
-        sticky.style.top = "";
-        sticky.style.left = "";
-        sticky.style.width = "";
-        sticky.style.zIndex = "";
-      }
-
-      const beforeProgress = Math.min(1, progress / 0.48);
-      const afterProgress = Math.min(1, Math.max(0, (progress - 0.48) / 0.52));
-      const easeOut = (value) => 1 - ((1 - value) ** 3);
-      const before = section.querySelector(".before-after-scroll__before");
-
-      if (before) {
-        before.style.opacity = `${easeOut(beforeProgress)}`;
-        before.style.transform = `translateX(${(1 - easeOut(beforeProgress)) * -38}px)`;
-      }
-      after.style.opacity = `${easeOut(afterProgress)}`;
-      after.style.transform = `translateX(${(1 - easeOut(afterProgress)) * 38}px)`;
-      if (progressBar) {
-        progressBar.style.setProperty("--reveal-progress", `${progress * 100}%`);
-      }
+    frame.addEventListener("pointerdown", (event) => {
+      dragging = true;
+      frame.setPointerCapture(event.pointerId);
+      updateFromPointer(event);
     });
-    ticking = false;
-  };
+    frame.addEventListener("pointermove", (event) => {
+      if (dragging) updateFromPointer(event);
+    });
+    frame.addEventListener("pointerup", () => { dragging = false; });
+    frame.addEventListener("pointercancel", () => { dragging = false; });
+    frame.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") updateSlider(value - 4);
+      if (event.key === "ArrowRight") updateSlider(value + 4);
+      if (event.key === "Home") updateSlider(0);
+      if (event.key === "End") updateSlider(100);
+    });
 
-  const requestUpdate = () => {
-    if (ticking) return;
-    ticking = true;
-    window.requestAnimationFrame(updateReveal);
-  };
-
-  updateReveal();
-  window.addEventListener("scroll", requestUpdate, { passive: true });
-  window.addEventListener("resize", requestUpdate, { passive: true });
+    updateSlider(value);
+  });
 }
 
-initBeforeAfterReveal();
+initBeforeAfterSlider();
 
 const masonryCanvas = document.querySelector("#masonry-canvas");
 const masonryStage = document.querySelector("#masonry-stage");
