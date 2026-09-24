@@ -230,7 +230,7 @@
         </div>
       </section>
 
-      <section class="gallery-section reveal" id="realisaties" aria-labelledby="gallery-title">
+      <section class="gallery-section" id="realisaties" aria-labelledby="gallery-title">
         <div class="section-heading">
           <p class="kicker">Realisaties</p>
           <h2 id="gallery-title">Bekijk voegwerken en gevelrenovaties van dichtbij.</h2>
@@ -310,14 +310,25 @@
             <img src="./assets/projecten/project-06.jpg" alt="Nieuwbouw met gevelrenovatie en nieuw voegwerk" loading="lazy" />
             <figcaption>Gevelrenovatie en nieuw voegwerk</figcaption>
           </figure>
-          <figure class="photo-card reveal">
-            <img src="./assets/projecten/gevelrenovatie-voor.png" alt="Muur voor gevelrenovatie" loading="lazy" />
-            <figcaption>Gevelrenovatie voor</figcaption>
-          </figure>
-          <figure class="photo-card reveal">
-            <img src="./assets/projecten/gevelrenovatie-na.png" alt="Muur na gevelrenovatie" loading="lazy" />
-            <figcaption>Gevelrenovatie na</figcaption>
-          </figure>
+          <div class="before-after-scroll" data-before-after aria-label="Voor en na gevelrenovatie">
+            <div class="before-after-scroll__sticky">
+              <div class="before-after-scroll__frame">
+                <figure class="photo-card before-after-scroll__before">
+                  <img src="./assets/projecten/gevelrenovatie-voor.png" alt="Muur voor gevelrenovatie" loading="lazy" />
+                  <figcaption>Gevelrenovatie voor</figcaption>
+                </figure>
+                <figure class="photo-card before-after-scroll__after">
+                  <img src="./assets/projecten/gevelrenovatie-na.png" alt="Muur na gevelrenovatie" loading="lazy" />
+                  <figcaption>Gevelrenovatie na</figcaption>
+                </figure>
+                <div class="before-after-scroll__progress" aria-hidden="true">
+                  <span>Voor</span>
+                  <i data-before-after-progress></i>
+                  <span>Na</span>
+                </div>
+              </div>
+            </div>
+          </div>
           <figure class="photo-card reveal">
             <img src="./assets/projecten/project-05.jpg" alt="Moderne gevel met grijze steen en voegwerk" loading="lazy" />
             <figcaption>Modern voegwerk</figcaption>

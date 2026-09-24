@@ -59,6 +59,55 @@ if (hero && heroCard && !reduceMotion && window.matchMedia("(pointer: fine)").ma
   });
 }
 
+function initBeforeAfterReveal() {
+  const sections = [...document.querySelectorAll("[data-before-after]")];
+  if (!sections.length) return;
+
+  let ticking = false;
+
+  const updateReveal = () => {
+    sections.forEach((section) => {
+      const sticky = section.querySelector(".before-after-scroll__sticky");
+      const after = section.querySelector(".before-after-scroll__after");
+      const progressBar = section.querySelector("[data-before-after-progress]");
+      if (!sticky || !after) return;
+
+      const bounds = section.getBoundingClientRect();
+      const stickyTop = parseFloat(getComputedStyle(sticky).top) || 0;
+      const travel = Math.max(1, section.offsetHeight - sticky.offsetHeight);
+      const progress = Math.min(1, Math.max(0, (stickyTop - bounds.top) / travel));
+
+      const beforeProgress = Math.min(1, progress / 0.48);
+      const afterProgress = Math.min(1, Math.max(0, (progress - 0.48) / 0.52));
+      const easeOut = (value) => 1 - ((1 - value) ** 3);
+      const before = section.querySelector(".before-after-scroll__before");
+
+      if (before) {
+        before.style.opacity = `${easeOut(beforeProgress)}`;
+        before.style.transform = `translateX(${(1 - easeOut(beforeProgress)) * -38}px)`;
+      }
+      after.style.opacity = `${easeOut(afterProgress)}`;
+      after.style.transform = `translateX(${(1 - easeOut(afterProgress)) * 38}px)`;
+      if (progressBar) {
+        progressBar.style.setProperty("--reveal-progress", `${progress * 100}%`);
+      }
+    });
+    ticking = false;
+  };
+
+  const requestUpdate = () => {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(updateReveal);
+  };
+
+  updateReveal();
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate, { passive: true });
+}
+
+initBeforeAfterReveal();
+
 const masonryCanvas = document.querySelector("#masonry-canvas");
 const masonryStage = document.querySelector("#masonry-stage");
 const masonryProgress = document.querySelector("#masonry-progress");

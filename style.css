@@ -494,6 +494,118 @@ section {
   line-height: 1.35;
 }
 
+/* Pinned before/after reveal for the masonry renovation project. */
+.before-after-scroll {
+  position: relative;
+  grid-column: 1 / -1;
+  height: calc(100vh + clamp(240px, 27vw, 340px));
+  margin: 0;
+}
+
+.before-after-scroll__sticky {
+  position: sticky;
+  top: clamp(48px, 9vh, 100px);
+  height: clamp(240px, 27vw, 340px);
+}
+
+.before-after-scroll__frame {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  width: min(760px, calc(100% - 32px));
+  height: clamp(240px, 27vw, 340px);
+  margin: 0 auto;
+}
+
+.before-after-scroll .photo-card {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.before-after-scroll .photo-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  object-fit: cover;
+  transform: none;
+}
+
+.before-after-scroll .photo-card:hover img {
+  transform: none;
+}
+
+.before-after-scroll__before {
+  z-index: 1;
+  transform: translateX(-38px);
+}
+
+.before-after-scroll__after {
+  z-index: 2;
+  transform: translateX(38px);
+}
+
+.before-after-scroll .photo-card figcaption {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  z-index: 3;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--charcoal);
+  padding: 8px 12px;
+  box-shadow: 0 8px 18px rgba(33, 31, 31, 0.12);
+}
+
+.before-after-scroll__before figcaption {
+  left: 18px;
+  right: auto;
+}
+
+.before-after-scroll__progress {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.before-after-scroll__progress i {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.before-after-scroll__progress i::after {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--reveal-progress, 0%);
+  background: #fff;
+  content: "";
+}
+
 .project-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2037,6 +2149,19 @@ body {
   .masonry-section > .service-grid {
     margin-top: 36px;
   }
+
+  .before-after-scroll {
+    height: calc(100vh + clamp(240px, 54vw, 420px));
+  }
+
+  .before-after-scroll__sticky {
+    height: clamp(240px, 54vw, 420px);
+  }
+
+  .before-after-scroll__frame {
+    width: calc(100% - 32px);
+    height: clamp(240px, 54vw, 420px);
+  }
 }
 
 @media (max-width: 560px) {
@@ -2075,5 +2200,41 @@ body {
 
   .masonry-section > .service-grid {
     margin-top: -20px;
+  }
+
+  .before-after-scroll {
+    height: calc(100vh + 250px);
+    margin-top: 0;
+  }
+
+  .before-after-scroll__sticky {
+    top: 24px;
+    height: 518px;
+  }
+
+  .before-after-scroll__frame {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    width: calc(100% - 20px);
+    height: 518px;
+  }
+
+  .before-after-scroll .photo-card figcaption {
+    right: 10px;
+    bottom: 10px;
+    padding: 6px 9px;
+    font-size: 12px;
+  }
+
+  .before-after-scroll__progress {
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    font-size: 10px;
+  }
+
+  .before-after-scroll__before figcaption {
+    left: 10px;
+    right: auto;
   }
 }
