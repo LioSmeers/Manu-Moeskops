@@ -452,14 +452,16 @@ section {
 }
 
 .gallery-section {
-  border-top: 1px solid var(--line);
+  border-top: 3px solid #8e1117;
 }
 
 .photo-grid {
   display: block;
+  counter-reset: gallery-pair;
 }
 
 .gallery-step {
+  counter-increment: gallery-pair;
   height: 155svh;
   position: relative;
   overflow: clip;
@@ -694,6 +696,96 @@ section {
   .gallery-section .before-after-scroll .before-after-scroll__before figcaption {
     left: 8px;
     right: auto;
+  }
+}
+
+.gallery-section .gallery-visual {
+  transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.4s ease;
+}
+
+.gallery-ready:not(.gallery-entered) .gallery-visual {
+  opacity: 0;
+  transform: translate3d(-90px, 18px, 0) scale(0.97);
+  pointer-events: none;
+}
+
+.gallery-ready:not(.gallery-entered) .gallery-visual:nth-child(2) {
+  transform: translate3d(90px, 18px, 0) scale(0.97);
+}
+
+.gallery-entered .gallery-visual {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.gallery-viewport::before {
+  content: counter(gallery-pair, decimal-leading-zero);
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 32px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #8e1117;
+  color: #8e1117;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.gallery-viewport::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 28px;
+  left: 0;
+  height: 2px;
+  background: #8e1117;
+  opacity: 0.3;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gallery-entered .gallery-viewport::after {
+  transform: scaleX(1);
+}
+
+.gallery-viewport > .photo-card figcaption {
+  color: #8e1117;
+}
+
+.gallery-viewport > .photo-card > img {
+  transition: transform 0.45s ease, box-shadow 0.45s ease;
+  box-shadow: 0 16px 36px rgba(70, 25, 27, 0.17);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .gallery-viewport > .photo-card:hover > img {
+    transform: translateY(-5px);
+    box-shadow: 0 24px 48px rgba(100, 16, 25, 0.23);
+  }
+}
+
+@media (max-width: 700px) {
+  .gallery-viewport::after {
+    bottom: 72px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-section .gallery-visual,
+  .gallery-viewport::after,
+  .gallery-viewport > .photo-card > img {
+    transition: none;
+  }
+
+  .gallery-ready .gallery-visual {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .gallery-viewport > .photo-card:hover > img {
+    transform: none;
   }
 }
 

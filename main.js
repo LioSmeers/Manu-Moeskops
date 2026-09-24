@@ -60,50 +60,35 @@ if (hero && heroCard && !reduceMotion && window.matchMedia("(pointer: fine)").ma
 }
 
 function initPhotoSequence() {
-  const steps = [...document.querySelectorAll(".gallery-step")].map((step) => ({
-    step,
-    progress: 0,
-    visuals: [...step.querySelectorAll(".gallery-visual")]
-  }));
+  const steps = [...document.querySelectorAll(".gallery-step")];
   const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-  let pending = false;
+  const reveal = (step) => step.classList.add("gallery-entered");
 
-  const update = () => {
-    pending = false;
-    const viewportHeight = window.innerHeight;
-    const distance = Math.min(window.innerWidth * 0.22, 240);
+  if (motionPreference.matches || !("IntersectionObserver" in window)) {
+    steps.forEach(reveal);
+    return;
+  }
 
-    steps.forEach((item) => {
-      const { step, visuals } = item;
-      const bounds = step.getBoundingClientRect();
-      // Measure the stationary step, not the animated image, to avoid feedback.
-      const offset = (bounds.top + bounds.height / 2 - viewportHeight / 2) / bounds.height;
-      const progress = Math.max(item.progress, Math.min(1, (0.5 - offset) / 0.18));
-      item.progress = progress;
-      const visibility = progress * progress * (3 - 2 * progress);
-      visuals.forEach((visual, index) => {
-        const direction = index % 2 === 0 ? -1 : 1;
-        visual.style.opacity = motionPreference.matches ? "1" : String(visibility);
-        visual.style.transform = motionPreference.matches
-          ? "none"
-          : `translate3d(${direction * distance * (1 - visibility)}px, 0, 0) rotate(${direction * 1.5 * (1 - visibility)}deg) scale(${0.97 + 0.03 * visibility})`;
-        visual.style.pointerEvents = visibility > 0.5 || motionPreference.matches ? "auto" : "none";
-      });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting || entry.intersectionRatio < 0.3) return;
+      reveal(entry.target.parentElement);
+      observer.unobserve(entry.target);
     });
-  };
+  }, { threshold: 0.3 });
 
-  const requestUpdate = () => {
-    if (pending) return;
-    pending = true;
-    window.requestAnimationFrame(update);
-  };
+  steps.forEach((step) => {
+    step.classList.add("gallery-ready");
+    // Earlier photographs stay visible when opening a deep link or restoring scroll.
+    if (step.getBoundingClientRect().bottom < 0) reveal(step);
+    else observer.observe(step.querySelector(".gallery-viewport"));
+  });
 
-  update();
-  window.addEventListener("scroll", requestUpdate, { passive: true });
-  window.addEventListener("resize", requestUpdate, { passive: true });
-  window.addEventListener("load", requestUpdate);
-  motionPreference.addEventListener("change", requestUpdate);
-  new ResizeObserver(requestUpdate).observe(document.querySelector(".photo-grid"));
+  motionPreference.addEventListener("change", () => {
+    if (!motionPreference.matches) return;
+    observer.disconnect();
+    steps.forEach(reveal);
+  });
 }
 
 initPhotoSequence();
