@@ -62,6 +62,7 @@ if (hero && heroCard && !reduceMotion && window.matchMedia("(pointer: fine)").ma
 function initPhotoSequence() {
   const steps = [...document.querySelectorAll(".gallery-step")].map((step) => ({
     step,
+    progress: 0,
     visuals: [...step.querySelectorAll(".gallery-visual")]
   }));
   const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -72,11 +73,13 @@ function initPhotoSequence() {
     const viewportHeight = window.innerHeight;
     const distance = Math.min(window.innerWidth * 0.22, 240);
 
-    steps.forEach(({ step, visuals }) => {
+    steps.forEach((item) => {
+      const { step, visuals } = item;
       const bounds = step.getBoundingClientRect();
       // Measure the stationary step, not the animated image, to avoid feedback.
       const offset = (bounds.top + bounds.height / 2 - viewportHeight / 2) / bounds.height;
-      const progress = Math.max(0, Math.min(1, (0.5 - Math.abs(offset)) / 0.18));
+      const progress = Math.max(item.progress, Math.min(1, (0.5 - offset) / 0.18));
+      item.progress = progress;
       const visibility = progress * progress * (3 - 2 * progress);
       visuals.forEach((visual, index) => {
         const direction = index % 2 === 0 ? -1 : 1;
