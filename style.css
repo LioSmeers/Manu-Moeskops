@@ -457,34 +457,33 @@ section {
 
 .photo-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 54px;
 }
 
 .photo-card {
   display: grid;
   gap: 12px;
+  width: min(920px, 100%);
   margin: 0;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 14px 32px rgba(33, 31, 31, 0.06);
-  padding: 12px;
-  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.65s ease;
 }
 
 .photo-card:hover {
-  border-color: rgba(150, 20, 29, 0.28);
-  transform: translateY(-2px);
-  box-shadow: 0 16px 34px rgba(33, 31, 31, 0.1);
+  transform: none;
 }
 
 .photo-card img {
   width: 100%;
-  height: clamp(240px, 27vw, 340px);
+  height: clamp(320px, 54vw, 620px);
   object-fit: contain;
-  border-radius: 6px;
-  background: #eee8df;
+  border-radius: 0;
+  background: transparent;
 }
 
 .photo-card figcaption {
@@ -508,7 +507,7 @@ section {
 .before-after-scroll__frame {
   position: relative;
   width: min(760px, calc(100% - 32px));
-  height: clamp(240px, 27vw, 340px);
+  height: clamp(320px, 54vw, 620px);
   margin: 0 auto;
   overflow: hidden;
   border-radius: 8px;
@@ -528,6 +527,7 @@ section {
   background: transparent;
   padding: 0;
   box-shadow: none;
+  width: 100%;
 }
 
 .before-after-scroll .photo-card img {
@@ -566,7 +566,7 @@ section {
   pointer-events: none;
 }
 
-.before-after-scroll__frame::before {
+.before-after-scroll__handle {
   position: absolute;
   top: 50%;
   left: var(--before-after-position, 50%);
@@ -579,12 +579,22 @@ section {
   background: var(--brick-dark);
   box-shadow: 0 4px 14px rgba(33, 31, 31, 0.25);
   color: #fff;
-  content: "↔";
+  cursor: ew-resize;
   font-size: 19px;
   font-weight: 800;
   place-items: center;
   transform: translate(-50%, -50%);
-  pointer-events: none;
+  padding: 0;
+  touch-action: none;
+}
+
+.before-after-scroll__handle:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+.before-after-scroll__handle span {
+  line-height: 1;
 }
 
 .before-after-scroll .photo-card figcaption {
@@ -1056,7 +1066,8 @@ footer {
   }
 
   .photo-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
+    gap: 42px;
   }
 }
 
@@ -2164,7 +2175,7 @@ body {
 
   .before-after-scroll__frame {
     width: calc(100% - 32px);
-    height: clamp(240px, 54vw, 340px);
+    height: clamp(320px, 70vw, 500px);
   }
 }
 
@@ -2209,7 +2220,7 @@ body {
   .before-after-scroll__frame {
     gap: 18px;
     width: calc(100% - 20px);
-    height: 250px;
+    height: 320px;
   }
 
   .before-after-scroll .photo-card figcaption {
