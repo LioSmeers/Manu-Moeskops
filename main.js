@@ -76,6 +76,22 @@ function initBeforeAfterReveal() {
       const stickyTop = parseFloat(getComputedStyle(sticky).top) || 0;
       const travel = Math.max(1, section.offsetHeight - sticky.offsetHeight);
       const progress = Math.min(1, Math.max(0, (stickyTop - bounds.top) / travel));
+      const pinStart = bounds.top <= stickyTop;
+      const pinEnd = bounds.bottom <= stickyTop + sticky.offsetHeight;
+
+      if (pinStart && !pinEnd) {
+        sticky.style.position = "fixed";
+        sticky.style.top = `${stickyTop}px`;
+        sticky.style.left = `${bounds.left}px`;
+        sticky.style.width = `${bounds.width}px`;
+        sticky.style.zIndex = "20";
+      } else {
+        sticky.style.position = "sticky";
+        sticky.style.top = "";
+        sticky.style.left = "";
+        sticky.style.width = "";
+        sticky.style.zIndex = "";
+      }
 
       const beforeProgress = Math.min(1, progress / 0.48);
       const afterProgress = Math.min(1, Math.max(0, (progress - 0.48) / 0.52));
